@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Configuracion de Monitor</string>
+    <string name="search_devices">Buscar dispositivos</string>
+    <string name="update_devices">Actualizar dispositivos</string>
+    <string name="stop_devices">Detener busqueda</string>
+    <string name="show_paired_devices">Mostrar pareados</string>
+</resources>
