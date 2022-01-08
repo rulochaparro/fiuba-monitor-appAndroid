@@ -24,17 +24,17 @@ import com.google.android.gms.location.*
 import java.io.IOException
 import java.util.*
 
-class ConnectionPageView: AppCompatActivity(), ConnectionPage.View {
+class ConnectionPageView: AppCompatActivity(){
 
     lateinit var getNetworksBtn: Button
     lateinit var getGPSBtn: Button
     lateinit var showNetworksBtn: Button
-    lateinit var connectionPagePresenter: ConnectionPagePresenter
     lateinit var lon: TextView
     lateinit var lat: TextView
     lateinit var localAddress: TextView
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     lateinit var geoCor: Geocoder
+
     companion object {
         var myUUID: UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
         var mybluetoothSocket: BluetoothSocket? = null
@@ -48,8 +48,6 @@ class ConnectionPageView: AppCompatActivity(), ConnectionPage.View {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_connection_page)
         myAddress = intent.getStringExtra(BTPageView.extraAddress).toString()
-
-        connectionPagePresenter = ConnectionPagePresenter(this)
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         geoCor = Geocoder(applicationContext)
@@ -70,42 +68,25 @@ class ConnectionPageView: AppCompatActivity(), ConnectionPage.View {
     }
 
     fun getCoordinates() {
+
         var address: List<Address>
-        println("override fun getCoordinates")
         if (checkPermissions()) {
-            println("Entro primer if")
             if (isLocationEnabled()) {
-                println("Entro segundo if")
-                if (ActivityCompat.checkSelfPermission(
-                        this,
-                        Manifest.permission.ACCESS_FINE_LOCATION
-                    ) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                        this,
-                        Manifest.permission.ACCESS_COARSE_LOCATION
-                    ) == PackageManager.PERMISSION_GRANTED) {
-                    println("ENTRO AL IF")
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                     fusedLocationClient.lastLocation.addOnCompleteListener(this) { task ->
                         var location: Location? = task.result
                         if (location == null) {
                             requestNewLocationData()
                         } else {
-                            println("ENTRO AL ELSE antes de setear")
                             printLatitude(location.latitude.toString())
                             printLongitude(location.longitude.toString())
-//                            lat.setText("LATITUD = " + location.latitude.toString())
-//                            lon.setText("LONGITUD = " + location.longitude.toString())
                             address = geoCor.getFromLocation(location.latitude,location.longitude,1)
                             printDirection(address.get(0).getAddressLine(0))
-//                            localAddress.setText("Dirección: " + address.get(0).getAddressLine(0))
                         }
                     }
-                } else {
-                    println("NO ENTRO AL IF")
                 }
             }
         }
-        println("Salgo FALSE")
-
     }
     private class ConnectToDevice(c: Context) : AsyncTask<Void, Void, String>() {
         private var connectSuccess: Boolean = true
@@ -147,18 +128,7 @@ class ConnectionPageView: AppCompatActivity(), ConnectionPage.View {
         }
     }
 
-    override fun printLatitude(lat: String) {
-        this.lat.setText(lat)
-    }
-
-    override fun printLongitude(lon: String) {
-        this.lon.setText(lon)
-    }
-    override fun printDirection(dir: String) {
-        this.localAddress.setText(dir)
-    }
-
-    fun checkPermissions(): Boolean {
+    private fun checkPermissions(): Boolean {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
             ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
         ) {
@@ -166,22 +136,18 @@ class ConnectionPageView: AppCompatActivity(), ConnectionPage.View {
             return true
         }
         println("devuelvo false")
-        ActivityCompat.requestPermissions(
-            this,
-            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-            1000
-        )
+        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1000)
         return true
     }
 
-     fun isLocationEnabled(): Boolean {
+     private fun isLocationEnabled(): Boolean {
         var locationManager: LocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
             LocationManager.NETWORK_PROVIDER
         )
     }
     @SuppressLint("MissingPermission")
-    fun requestNewLocationData(){
+    private fun requestNewLocationData(){
         var mLocationRequest = LocationRequest()
         mLocationRequest.priority = android.location.LocationRequest.QUALITY_HIGH_ACCURACY
         mLocationRequest.interval = 0
@@ -196,9 +162,17 @@ class ConnectionPageView: AppCompatActivity(), ConnectionPage.View {
             var myLastLocation : Location = locationResult.lastLocation
             printLatitude(myLastLocation.latitude.toString())
             printLongitude(myLastLocation.longitude.toString())
-//            lat.setText("LATITUD = " + mLastLocation.latitude.toString())
-//            lon.setText("LONGITUD = " + mLastLocation.longitude.toString())
         }
+    }
+    private fun printLatitude(lat: String) {
+        this.lat.setText("Latitud: " + lat)
+    }
+
+    private fun printLongitude(lon: String) {
+        this.lon.setText("Longitud: " + lon)
+    }
+    private fun printDirection(dir: String) {
+        this.localAddress.setText("Dirección: " + dir)
     }
 
 }
