@@ -14,6 +14,7 @@ import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.configuraciondemonitor.R
+import com.example.configuraciondemonitor.connectionpage.ConnectionPageView
 
 class BTPageView : AppCompatActivity() {
 
@@ -28,6 +29,10 @@ class BTPageView : AppCompatActivity() {
 
     private var btAdapter: BluetoothAdapter? = null
     private lateinit var pairedDevices: Set<BluetoothDevice>
+
+    companion object {
+        val extraAddress: String = "Device_address"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -131,9 +136,9 @@ class BTPageView : AppCompatActivity() {
             val device: BluetoothDevice = list[position]
             val address: String = device.address
 
-//            val intent = Intent(this, PageBTNPresenter::class.java)
-//            intent.putExtra(EXTRA_ADDRESS, address)
-//            startActivity(intent)
+            val intent = Intent(this, ConnectionPageView::class.java)
+            intent.putExtra(extraAddress, address)
+            startActivity(intent)
         }
 
     }
