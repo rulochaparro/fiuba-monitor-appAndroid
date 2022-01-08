@@ -4,4 +4,10 @@
     <string name="update_devices">Actualizar dispositivos</string>
     <string name="stop_devices">Detener busqueda</string>
     <string name="show_paired_devices">Mostrar guardados</string>
+    <string name="get_networks">Obtener redes escaneadas</string>
+    <string name="get_gps">Obtener coordenadas</string>
+    <string name="show_networks">Mostrar redes escaneadas</string>
+    <string name="lon">Longitud:</string>
+    <string name="lat">Latitud:</string>
+    <string name="dir">Dirección:</string>
 </resources>
