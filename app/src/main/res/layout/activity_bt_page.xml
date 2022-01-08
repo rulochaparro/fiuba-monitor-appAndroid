@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".btpage.BTPageView">
+    tools:context=".BTPageView">
 
     <ListView
         android:id="@+id/select_device_list"

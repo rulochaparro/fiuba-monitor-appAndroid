@@ -23,10 +23,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ConfiguracionDeMonitor">
         <activity
-            android:name=".activity_connection_page"
+            android:name=".ConnectionPageView"
             android:exported="false" />
         <activity
-            android:name=".btpage.BTPageView"
+            android:name=".BTPageView"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

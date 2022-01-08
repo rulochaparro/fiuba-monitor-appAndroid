@@ -1,4 +1,4 @@
-package com.example.configuraciondemonitor.btpage
+package com.example.configuraciondemonitor
 
 import android.app.Activity
 import android.bluetooth.BluetoothAdapter
@@ -13,8 +13,6 @@ import android.util.Log
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import com.example.configuraciondemonitor.R
-import com.example.configuraciondemonitor.connectionpage.ConnectionPageView
 
 class BTPageView : AppCompatActivity() {
 
@@ -45,6 +43,7 @@ class BTPageView : AppCompatActivity() {
         refreshBtn = findViewById(R.id.update_BT_devices)
         stopSearchBtn = findViewById(R.id.stop_BT_devices)
         pairedDevicesBtn = findViewById(R.id.show_BT_paired_devices)
+
 
         devicesList = findViewById(R.id.select_device_list)
 
