@@ -10,4 +10,8 @@
     <string name="lon">Longitud:</string>
     <string name="lat">Latitud:</string>
     <string name="dir">Dirección:</string>
+    <string name="pick_networks">Seleccione una red:</string>
+    <string name="input_password">Ingrese una contraseña:</string>
+    <string name="send_message">Enviar mensaje</string>
+
 </resources>

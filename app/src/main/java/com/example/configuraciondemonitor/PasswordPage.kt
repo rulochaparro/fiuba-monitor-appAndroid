@@ -2,87 +2,67 @@ package com.example.configuraciondemonitor
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.ProgressDialog
-import android.bluetooth.BluetoothAdapter
-import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
-import android.os.AsyncTask
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Looper
-import android.util.Log
+import android.view.View
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.*
-import java.io.IOException
-import java.util.*
+import com.google.gson.Gson
 
-class ConnectionPageView: AppCompatActivity(){
+class PasswordPage : AppCompatActivity() {
 
-    lateinit var getNetworksBtn: Button
+    lateinit var inputPassword: EditText
     lateinit var getGPSBtn: Button
-    lateinit var showNetworksBtn: Button
     lateinit var lon: TextView
     lateinit var lat: TextView
     lateinit var localAddress: TextView
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     lateinit var geoCor: Geocoder
-    lateinit var connectionPagePresenter: ConnectionPagePresenter
-    lateinit var networksAux:String
+    lateinit var sendMessageBtn: Button
+    var latitude : String = ""
+    var longitude : String = ""
 
     companion object {
-        var myUUID: UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
+        var selectedNetwork: String = "Device_address"
         var mybluetoothSocket: BluetoothSocket? = null
-        lateinit var myProgress: ProgressDialog
-        lateinit var myBluetoothAdapter: BluetoothAdapter
-        var mIsConnected: Boolean = false
-        lateinit var myAddress: String
-        val networks:String =""
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_connection_page)
-        myAddress = intent.getStringExtra(BTPageView.extraAddress).toString()
+        setContentView(R.layout.activity_passwrod_page)
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        geoCor = Geocoder(applicationContext)
-
-        connectionPagePresenter = ConnectionPagePresenter()
-
-        getNetworksBtn = findViewById(R.id.getNetworks)
+        inputPassword = findViewById(R.id.inputPass)
         getGPSBtn = findViewById(R.id.getGPS)
-        showNetworksBtn = findViewById(R.id.showNetworks)
         lon = findViewById(R.id.lon)
         lat = findViewById(R.id.lat)
         localAddress = findViewById(R.id.dir)
+        sendMessageBtn = findViewById(R.id.sendMessage)
 
+        selectedNetwork = intent.getStringExtra(ShowNetworks.selectedNetwork).toString()
+        mybluetoothSocket = ConnectionPageView.mybluetoothSocket
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        geoCor = Geocoder(applicationContext)
 
-        ConnectToDevice(this).execute()
-
-        getNetworksBtn.setOnClickListener { getNetworks() }
         getGPSBtn.setOnClickListener { getCoordinates() }
-        showNetworksBtn.setOnClickListener { getCoordinates() }
+        sendMessageBtn.setOnClickListener { sendMessage() }
     }
 
-    fun getNetworks(){
-        mybluetoothSocket?.let { connectionPagePresenter.sendCommand("a", it) }
-        mybluetoothSocket?.let { networksAux = connectionPagePresenter.receiveCommand( it) }
-        println("networks: " + networksAux)
-
-        val intent  = Intent(this, ShowNetworks::class.java)
-        intent.putExtra(networks, networksAux)
-        startActivity(intent)
-
+    fun clear(view: View){
+        inputPassword.setText("")
     }
+
     fun getCoordinates() {
 
         var address: List<Address>
@@ -104,46 +84,6 @@ class ConnectionPageView: AppCompatActivity(){
             }
         }
     }
-    private class ConnectToDevice(c: Context) : AsyncTask<Void, Void, String>() {
-        private var connectSuccess: Boolean = true
-        private val context: Context
-
-        init {
-            this.context = c
-        }
-
-        override fun onPreExecute() {
-            super.onPreExecute()
-            myProgress = ProgressDialog.show(context, "Connecting...", "please wait")
-        }
-
-        override fun doInBackground(vararg p0: Void?): String? {
-            try {
-                if (mybluetoothSocket == null || !mIsConnected) {
-                    myBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-                    val device: BluetoothDevice = myBluetoothAdapter.getRemoteDevice(myAddress)
-                    mybluetoothSocket = device.createInsecureRfcommSocketToServiceRecord(myUUID)
-                    BluetoothAdapter.getDefaultAdapter().cancelDiscovery()
-                    mybluetoothSocket!!.connect()
-                }
-            } catch (e: IOException) {
-                connectSuccess = false
-                e.printStackTrace()
-            }
-            return null
-        }
-
-        override fun onPostExecute(result: String?) {
-            super.onPostExecute(result)
-            if (!connectSuccess) {
-                Log.i("data", "couldn't connect")
-            } else {
-                mIsConnected = true
-            }
-            myProgress.dismiss()
-        }
-    }
-
     private fun checkPermissions(): Boolean {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
             ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
@@ -156,7 +96,7 @@ class ConnectionPageView: AppCompatActivity(){
         return true
     }
 
-     private fun isLocationEnabled(): Boolean {
+    private fun isLocationEnabled(): Boolean {
         var locationManager: LocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
             LocationManager.NETWORK_PROVIDER
@@ -181,14 +121,22 @@ class ConnectionPageView: AppCompatActivity(){
         }
     }
     private fun printLatitude(lat: String) {
+        latitude = lat
         this.lat.setText("Latitud: " + lat)
     }
 
     private fun printLongitude(lon: String) {
+        longitude = lon
         this.lon.setText("Longitud: " + lon)
     }
     private fun printDirection(dir: String) {
         this.localAddress.setText("Dirección: " + dir)
     }
 
+    fun sendMessage() {
+        var connectionPagePresenter = ConnectionPagePresenter()
+        var message:String = "{\"ssid\" : \"" + selectedNetwork+ "\", \"password\" : \"" + inputPassword.text + "\", \"lon\" : \"" + longitude + "\",\"lat\" : \"" + latitude +  "\"}"
+        println(message)
+        mybluetoothSocket?.let { connectionPagePresenter.sendCommand(message, it) }
+    }
 }

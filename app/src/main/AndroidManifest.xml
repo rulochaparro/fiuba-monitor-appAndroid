@@ -23,6 +23,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ConfiguracionDeMonitor">
         <activity
+            android:name=".PasswordPage"
+            android:exported="false" />
+        <activity
+            android:name=".ShowNetworks"
+            android:exported="false" />
+        <activity
             android:name=".ConnectionPageView"
             android:exported="false" />
         <activity
