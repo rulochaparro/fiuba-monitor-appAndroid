@@ -33,7 +33,6 @@ class ShowNetworks : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_networks)
 
-
         val gson = Gson()
         json = intent.getStringExtra(ConnectionPageView.networks).toString()
 

@@ -135,7 +135,10 @@ class PasswordPage : AppCompatActivity() {
 
     fun sendMessage() {
         var connectionPagePresenter = ConnectionPagePresenter()
-        var message:String = "{\"ssid\" : \"" + selectedNetwork+ "\", \"password\" : \"" + inputPassword.text + "\", \"lon\" : \"" + longitude + "\",\"lat\" : \"" + latitude +  "\"}"
+        var netData: NetworkChosen = NetworkChosen(selectedNetwork,inputPassword.text.toString(), longitude.toDouble(), latitude.toDouble())
+//        var message:String = "{\"ssid\" : \"" + selectedNetwork+ "\", \"password\" : \"" + inputPassword.text + "\", \"lon\" : \"" + longitude + "\",\"lat\" : \"" + latitude +  "\"}"
+        val gson = Gson()
+        var message = gson.toJson(netData)
         println(message)
         mybluetoothSocket?.let { connectionPagePresenter.sendCommand(message, it) }
     }
