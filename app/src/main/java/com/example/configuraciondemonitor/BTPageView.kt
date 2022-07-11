@@ -16,9 +16,6 @@ import androidx.appcompat.app.AppCompatActivity
 
 class BTPageView : AppCompatActivity() {
 
-    lateinit var searchBtn: Button
-    lateinit var refreshBtn: Button
-    lateinit var stopSearchBtn: Button
     lateinit var pairedDevicesBtn: Button
     lateinit var devicesList: ListView
 
@@ -39,9 +36,6 @@ class BTPageView : AppCompatActivity() {
         val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
         btAdapter = bluetoothManager.getAdapter()
 
-        searchBtn = findViewById(R.id.search_BT_devices)
-        refreshBtn = findViewById(R.id.update_BT_devices)
-        stopSearchBtn = findViewById(R.id.stop_BT_devices)
         pairedDevicesBtn = findViewById(R.id.show_BT_paired_devices)
 
 
@@ -62,9 +56,6 @@ class BTPageView : AppCompatActivity() {
         val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
         registerReceiver(receiver, filter)
 
-        searchBtn.setOnClickListener { searchDevices() }
-        refreshBtn.setOnClickListener { refreshDevices() }
-        stopSearchBtn.setOnClickListener { stopSearch() }
         pairedDevicesBtn.setOnClickListener { showPairedDevices() }
     }
 
@@ -99,18 +90,6 @@ class BTPageView : AppCompatActivity() {
                 }
             }
         }
-
-    private fun searchDevices() {
-        showToastMessage("Aprete searchDevices")
-    }
-
-    private fun refreshDevices() {
-        showToastMessage("Aprete refreshDevices")
-    }
-
-    private fun stopSearch() {
-        showToastMessage("Aprete stopSearch")
-    }
 
     private fun showPairedDevices() {
         devicesScannedName.clear()
