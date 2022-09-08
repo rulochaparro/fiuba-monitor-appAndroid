@@ -13,5 +13,7 @@
     <string name="pick_networks">Seleccione una red:</string>
     <string name="input_password">Ingrese una contraseña:</string>
     <string name="send_message">Enviar mensaje</string>
+    <string name="sensivility">Sensibilidad</string>
+    <string name="measurement_time">Tiempo de muestro</string>
 
 </resources>

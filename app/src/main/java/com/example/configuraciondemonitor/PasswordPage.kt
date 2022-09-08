@@ -23,6 +23,9 @@ import com.google.gson.Gson
 class PasswordPage : AppCompatActivity() {
 
     lateinit var inputPassword: EditText
+    lateinit var inputSensivility: EditText
+    lateinit var inputMeasurementTime: EditText
+    
     lateinit var getGPSBtn: Button
     lateinit var lon: TextView
     lateinit var lat: TextView
@@ -44,6 +47,8 @@ class PasswordPage : AppCompatActivity() {
         setContentView(R.layout.activity_passwrod_page)
 
         inputPassword = findViewById(R.id.inputPass)
+        inputSensivility = findViewById(R.id.sensivityInput)
+        inputMeasurementTime = findViewById(R.id.timeInput)
         getGPSBtn = findViewById(R.id.getGPS)
         lon = findViewById(R.id.lon)
         lat = findViewById(R.id.lat)
@@ -135,7 +140,7 @@ class PasswordPage : AppCompatActivity() {
 
     fun sendMessage() {
         var connectionPagePresenter = ConnectionPagePresenter()
-        var netData: NetworkChosen = NetworkChosen(selectedNetwork,inputPassword.text.toString(), longitude.toDouble(), latitude.toDouble())
+        var netData: NetworkChosen = NetworkChosen(selectedNetwork,inputPassword.text.toString(), longitude.toDouble(), latitude.toDouble(), inputSensivility.text.toString().toDouble(), inputMeasurementTime.text.toString().toInt())
 //        var message:String = "{\"ssid\" : \"" + selectedNetwork+ "\", \"password\" : \"" + inputPassword.text + "\", \"lon\" : \"" + longitude + "\",\"lat\" : \"" + latitude +  "\"}"
         val gson = Gson()
         var message = gson.toJson(netData)
